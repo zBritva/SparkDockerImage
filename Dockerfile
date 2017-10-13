@@ -25,7 +25,7 @@ RUN echo $JAVA_HOME
 ENV SCALA_VERSION 2.11.8
 ENV SBT_VERSION 1.0.1
 ENV SPARK_VERSION 2.2.0
-ENV HADOOP_VERSION 2.7
+ENV SPARK_HADOOP_VERSION 2.7
 
 #install wget to download sources or any files
 RUN apt-get -y install wget
@@ -35,17 +35,17 @@ RUN wget www.scala-lang.org/files/archive/scala-$SCALA_VERSION.deb
 RUN dpkg -i scala-2.11.8.deb
 
 # Install sbt
-RUN \
-  wget https://github.com/sbt/sbt/releases/download/vSBT_VERSION/sbt-$SBT_VERSION.tgz && \
-  dpkg -i sbt-$SBT_VERSION.deb && \
-  rm sbt-$SBT_VERSION.deb && \
-  apt-get update && \
-  apt-get install sbt && \
-  sbt sbtVersion
+RUN apt-get -y install apt-transport-https
+RUN echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
+RUN apt-get update
+RUN apt-get -y install sbt
 
-RUN wget https://d3kbcqa49mib13.cloudfront.net/spark-$SPARK_VERSION-bin-hadoop$HADOOP_VERSION.tgz
-RUN tar -xvzf spark-$SPARK_VERSION-bin-hadoop$HADOOP_VERSION.tgz
-WORKDIR /spark-$SPARK_VERSION-bin-hadoop$HADOOP_VERSION
+RUN wget https://d3kbcqa49mib13.cloudfront.net/spark-$SPARK_VERSION-bin-hadoop$SPARK_HADOOP_VERSION.tgz
+RUN tar -xvzf spark-$SPARK_VERSION-bin-hadoop$SPARK_HADOOP_VERSION.tgz
+WORKDIR /spark-$SPARK_VERSION-bin-hadoop$SPARK_HADOOP_VERSION
 
+EXPOSE 8080
+EXPOSE 7077
 #TODO add Spark start scripts
-ENTRYPOINT ls
+ENTRYPOINT bash
