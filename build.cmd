@@ -1,1 +1,1 @@
-docker build -t spark .
+docker build -t ilfat/spark .

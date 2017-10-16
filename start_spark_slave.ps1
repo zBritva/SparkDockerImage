@@ -1,0 +1,2 @@
+docker run --name spark_slave --network spark_network -d --rm -i -t ilfat/spark tail -f /dev/null
+Invoke-Expression "docker exec spark_slave ./sbin/start-slave.sh spark://$((docker inspect spark_master | ConvertFrom-Json).NetworkSettings.Networks.spark_network.IPAddress):7077"
